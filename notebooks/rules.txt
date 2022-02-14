@@ -1,4 +1,4 @@
-Rules for the surgicl report  perforated appendicitis grading:
+Rules for the surgical report  perforated appendicitis grading:
 
 
 Grade 1 : Localized/Contained perforation
@@ -9,5 +9,5 @@ Grade 3 : Generalized peritonitis without dominant abscess
 
 Grade 4 : Generalized peritonitis with one/more abscesses
 
-if non of the mentioned condition is met, then it is a simple appendicitis and
+if none of the mentioned condition is met, then it is a simple appendicitis and
     we can assign grade 0 for it. 
