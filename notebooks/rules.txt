@@ -1,13 +1,42 @@
-Rules for the surgical report  perforated appendicitis grading:
+I) Appendiceal necrosis:
+1. Yes
+2. No
+3. Not mentioned
+
+II) Fecalith:
+1. None
+2. Single
+3. Multiple
+4. Not mentioned
+
+III) Intra-abdominal abscess:
+1. None
+2. Single
+3. Multiple
+4. Not mentioned
+
+IV) Intraperitoneal fluid:
+1. None
+2. Serous
+3. Seropurulent
+4. Purulent
+5. Not Mentioned
+
+V) Peritonitis:
+1.None
+2. Localized
+3. Generalized
+4. Not Mentioned
+
+VI) Presence of perforation:
+1. No
+2. Yes
+
+VII) Site of perforation mentioned:
+1. No
+2. Yes
+
+VIII) Site of perforation :
+_______
 
 
-Grade 1 : Localized/Contained perforation
-
-Grade 2 : Contained abscess without peritonitis
-
-Grade 3 : Generalized peritonitis without dominant abscess
-
-Grade 4 : Generalized peritonitis with one/more abscesses
-
-if none of the mentioned condition is met, then it is a simple appendicitis and
-    we can assign grade 0 for it. 
