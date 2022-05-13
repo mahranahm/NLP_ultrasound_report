@@ -131,3 +131,6 @@ dmypy.json
 # Ignore the data folder
 /data
 /data/*
+
+# Throwaway/test files
+dumpster/
