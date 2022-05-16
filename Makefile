@@ -20,7 +20,7 @@ help:
 
 # BEWARE OF MAKEFILE SPACING
 test:
-	@python -m unittest tests
+	@pytest
 
 # If the requirements.txt file has some weird paths use: pip list --format=freeze --local > requirements.txt
 
