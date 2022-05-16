@@ -17,6 +17,12 @@ def extract_text_between_markers(
     end_marker: Union[str, List[str]],
     text_as_list: List[str],
 ) -> List[str]:
+    assert isinstance(start_marker, str) or isinstance(
+        start_marker, list
+    ), "start_marker should be a string or a list of strings"
+    assert isinstance(end_marker, str) or isinstance(
+        end_marker, list
+    ), "end_marker should be a string or a list of one string"
     start_marker = start_marker if isinstance(start_marker, list) else [start_marker]
     end_marker = end_marker if isinstance(end_marker, list) else [end_marker]
     skip_line = True
@@ -41,6 +47,12 @@ def delete_text_between_markers(
     end_markers: List[List[str]],
     text_as_list: List[str],
 ) -> List[str]:
+    assert (
+        isinstance(start_markers, list) and len(start_markers) > 0
+    ), f"start_markers must be a list of one or more strings but it looks like: {start_markers}"
+    assert (
+        isinstance(start_markers, list) and len(start_markers) > 0
+    ), f"end_markers must be a list of one or more strings but it looks like: {end_markers}"
     assert len(start_markers) == len(
         end_markers
     ), "You should have the same number of start and end markers"
@@ -75,14 +87,23 @@ def remove_lines_containing_pattern(
     text_as_list: List[str],
     case_insensitive: bool = True,
 ) -> List[str]:
-    if case_insensitive:
-        text_as_list = [line.lower() for line in text_as_list]
-        patterns = [p.lower() if isinstance(p, str) else p for p in patterns]
+    # Case insensitivity for the regex goes to the pattern i.e. re.compile(pattern, re.IGNORECASE)
+    assert all(
+        isinstance(pattern, (str, Pattern)) for pattern in patterns
+    ), "All patterns should be strings or compiled regexes"
     preserved_text = []
     for line in text_as_list:
-        for pattern in patterns:
-            if (isinstance(pattern, str) and not pattern in line) or (
-                isinstance(pattern, Pattern) and re.search(pattern, line) is None
-            ):
-                preserved_text.append(line)
+        if all(
+            (
+                isinstance(pattern, str)
+                and not (
+                    pattern.lower() in line.lower()
+                    if case_insensitive
+                    else pattern in line
+                )
+            )
+            or (isinstance(pattern, Pattern) and re.search(pattern, line) is None)
+            for pattern in patterns
+        ):
+            preserved_text.append(line)
     return preserved_text
