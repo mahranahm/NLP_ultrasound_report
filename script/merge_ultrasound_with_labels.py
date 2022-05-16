@@ -1,6 +1,4 @@
 import argparse
-from asyncore import read
-import json
 import os
 from pathlib import Path
 from typing import List

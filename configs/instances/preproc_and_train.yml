@@ -1,0 +1,7 @@
+schema: preproc_and_train
+dataset:
+  path: path/to/dataset
+preprocessing:
+  remove_stopwords: True
+model:
+  model_type: SVM

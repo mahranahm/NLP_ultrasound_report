@@ -42,7 +42,7 @@ def parse_args():
 
     assert (
         ultrasound_folder_input_path.exists() and ultrasound_folder_input_path.is_dir()
-    ), f"The ultrasound text file folder either does not exist or is not a folder directory."
+    ), "The ultrasound text file folder either does not exist or is not a folder directory."
 
     if not output_folder_path.exists():
         print("The output folder does not exist, creating it.")
