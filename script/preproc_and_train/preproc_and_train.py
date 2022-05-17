@@ -2,26 +2,20 @@ import argparse
 import re
 from pathlib import Path
 from typing import List
+from src.utils.evaluation import get_metrics
 
+import wandb
+from sklearn.pipeline import Pipeline
 from src import LOG_CONFIG_PATH, RANDOM_SEED
 from src.utils.config import read_config
 from src.utils.json import read_jsonlines
 from src.utils.logging import get_logger
-from src.utils.preprocessing import (
-    lowercase_dataset,
-    remove_patterns_from_text,
-    split_measure_text,
-    tokenize_dataset,
-)
-from src.utils.training import (
-    create_classifier,
-    create_model,
-    create_vectorizer,
-    get_train_and_test_set,
-    train_classifier,
-)
-from sklearn.pipeline import Pipeline
-
+from src.utils.preprocessing import (lowercase_dataset,
+                                     remove_patterns_from_text,
+                                     split_measure_text, tokenize_dataset)
+from src.utils.training import (create_classifier, create_model,
+                                create_vectorizer, get_train_and_test_set,
+                                train_classifier)
 
 logger = get_logger(log_config_path=LOG_CONFIG_PATH, diplayed_logger_name=__file__)
 
@@ -101,23 +95,28 @@ def get_trained_classifier(train_set: dict, config: dict) -> Pipeline:
 
 
 def main():
+    # Log to wandb
+    wandb.init(project="preproc_and_train", entity="ultrasound")
     # Get the config path
     config_path = parse_args()
     # Read config (all config checks are made in this call)
     config = read_config(config_path)
+    wandb.config = config
     # Get the dataset
     dataset = get_dataset(config)
     # Pre-process the dataset
     dataset = preprocess_dataset(dataset, config)
     # Get train and test set
     train_set, test_set = get_train_and_test_set(
-        dataset, train_test_ratio_split=0.99, seed=RANDOM_SEED
+        dataset, train_test_ratio_split=0.8, seed=RANDOM_SEED
     )
     # TODO: Train (do one iteration for now,
     # then generalize to when you need to do a search)
     classifier = get_trained_classifier(train_set, config)
     # TODO: Metrics, error analysis
     get_metrics(classifier, test_set)
+
+
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
-from sklearn.metrics import confusion_matrix
+import wandb
+from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.pipeline import Pipeline
 from src import LOG_CONFIG_PATH
 from src.utils.logging import get_logger
@@ -13,3 +14,13 @@ def get_metrics(classifier: Pipeline, test_set: dict) -> None:
     y_true = test_set["labels"]
     y_pred = classifier.predict(test_set["texts"])
     logger.info(confusion_matrix(y_true=y_true, y_pred=y_pred))
+    wandb.log({"accuracy": accuracy_score(y_true=y_true, y_pred=y_pred)})
+    wandb.log(
+        {
+            "confusion_matrix": wandb.plot.confusion_matrix(
+                probs=None,
+                y_true=y_true,
+                preds=y_pred,
+            )
+        }
+    )
