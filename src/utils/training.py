@@ -12,6 +12,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
+from src import RANDOM_SEED
 
 
 def get_components_from_dataset(
@@ -141,12 +142,13 @@ def train_classifier(
 
 
 from src.utils.preprocessing import dataset
+from sklearn.metrics import classification_report
 
 texts, labels, features = get_components_from_dataset(dataset)
 
-train_index, test_index = get_split_dataset_index(dataset, train_test_ratio_split=0.99)
-
-texts_train, labels_train = (texts[train_index], labels[train_index])
+train_set, test_set = get_train_and_test_set(
+    dataset, train_test_ratio_split=0.8, seed=RANDOM_SEED
+)
 
 vectorizer = create_vectorizer(vectorizer_type="count")
 
@@ -154,6 +156,10 @@ model = create_model(model_type="svm")
 
 classifier = create_classifier(vectorizer, model)
 
-train_classifier(classifier, texts_train, labels_train)
+train_classifier(classifier, train_set["texts"], train_set["labels"])
 
-print(classifier.score(texts_train, labels_train))
+print(classifier.score(train_set["texts"], train_set["labels"]))
+
+y_true = test_set["labels"]
+y_pred = classifier.predict(test_set["texts"])
+classification_report_dict = classification_report(y_true, y_pred, output_dict=True)

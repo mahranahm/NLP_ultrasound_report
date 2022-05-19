@@ -49,6 +49,7 @@ pickleshare==0.7.5
 Pillow==9.0.1
 pip==21.2.4
 platformdirs==2.5.1
+plotly==5.8.0
 pluggy==1.0.0
 promise==2.3
 prompt-toolkit==3.0.27
@@ -85,6 +86,7 @@ sklearn==0.0
 smmap==5.0.0
 stack-data==0.2.0
 tdqm==0.0.1
+tenacity==8.0.1
 threadpoolctl==3.1.0
 tomli==2.0.1
 torch==1.11.0

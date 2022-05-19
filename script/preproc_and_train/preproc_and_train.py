@@ -2,20 +2,32 @@ import argparse
 import re
 from pathlib import Path
 from typing import List
-from src.utils.evaluation import get_metrics
 
 import wandb
 from sklearn.pipeline import Pipeline
-from src import LOG_CONFIG_PATH, RANDOM_SEED
+from src import LOG_CONFIG_PATH, RANDOM_SEED, WANDB_ENTITY_NAME
 from src.utils.config import read_config
 from src.utils.json import read_jsonlines
 from src.utils.logging import get_logger
-from src.utils.preprocessing import (lowercase_dataset,
-                                     remove_patterns_from_text,
-                                     split_measure_text, tokenize_dataset)
-from src.utils.training import (create_classifier, create_model,
-                                create_vectorizer, get_train_and_test_set,
-                                train_classifier)
+from src.utils.preprocessing import (
+    lowercase_dataset,
+    remove_patterns_from_text,
+    split_measure_text,
+    tokenize_dataset,
+)
+from src.utils.training import (
+    create_classifier,
+    create_model,
+    create_vectorizer,
+    get_train_and_test_set,
+    train_classifier,
+)
+from src.utils.wandb_visualization import (
+    get_classification_report_visualization,
+    get_confused_examples_visualization,
+    get_confusion_matrix_visualization,
+    get_data_for_logging,
+)
 
 logger = get_logger(log_config_path=LOG_CONFIG_PATH, diplayed_logger_name=__file__)
 
@@ -94,29 +106,55 @@ def get_trained_classifier(train_set: dict, config: dict) -> Pipeline:
     return classifier
 
 
-def main():
+def log_results(
+    classifier: Pipeline, test_set: dict, project_name: str, config_path: Path
+) -> None:
+    # TODO: Make directory for each run with logs and model saves (for later when using torch
+    # and doing hp search)
     # Log to wandb
-    wandb.init(project="preproc_and_train", entity="ultrasound")
+    wandb.init(project=project_name, entity=WANDB_ENTITY_NAME)
+    # Save the config path
+    wandb.save(str(config_path), policy="end")
+    # Get the test set predictions
+    y_true = test_set["labels"]
+    y_pred = classifier.predict(test_set["texts"])
+    # Classification report
+    classification_report_visualization = get_classification_report_visualization(
+        y_true=y_true, y_pred=y_pred
+    )
+    logger.info(get_data_for_logging(classification_report_visualization))
+    wandb.log(classification_report_visualization, commit=False)
+    # Confusion matrix
+    confusion_matrix_visualization = get_confusion_matrix_visualization(y_true, y_pred)
+    logger.info(get_data_for_logging(confusion_matrix_visualization))
+    wandb.log(confusion_matrix_visualization, commit=False)
+    # Correct and incorrect predictions
+    confused_examples_visualization = get_confused_examples_visualization(
+        x=test_set["texts"], y_true=y_true, y_pred=y_pred
+    )
+    logger.info(get_data_for_logging(confused_examples_visualization))
+    wandb.log(confused_examples_visualization)
+    wandb.finish()
+
+
+def main():
     # Get the config path
     config_path = parse_args()
     # Read config (all config checks are made in this call)
     config = read_config(config_path)
-    wandb.config = config
     # Get the dataset
     dataset = get_dataset(config)
     # Pre-process the dataset
     dataset = preprocess_dataset(dataset, config)
     # Get train and test set
-    train_set, test_set = get_train_and_test_set(
-        dataset, train_test_ratio_split=0.8, seed=RANDOM_SEED
-    )
+    train_set, test_set = get_train_and_test_set(dataset)
     # TODO: Train (do one iteration for now,
     # then generalize to when you need to do a search)
     classifier = get_trained_classifier(train_set, config)
-    # TODO: Metrics, error analysis
-    get_metrics(classifier, test_set)
-
-
+    # Log results for visualization and analysis
+    log_results(
+        classifier, test_set, project_name="preproc_and_train", config_path=config_path
+    )
 
 
 if __name__ == "__main__":
