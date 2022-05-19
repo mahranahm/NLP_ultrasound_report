@@ -1,0 +1,51 @@
+extracted_lines=[]
+extract = False
+
+for line in open("168%20O.txt"):
+
+    if extract == False and "OPERATIVE PROCEDURE:".lower() in line.strip().lower():
+        extract = True
+        
+    if extract :
+        extracted_lines.append(line)
+        if "MONTREAL CHILDREN’S HOSPITAL".lower() in line.strip().lower():
+            extract = False # or break
+            
+print("".join(extracted_lines), file=open("results.txt", "a"))
+
+extracted_lines1=[]
+extract1 = False
+for line in open("168%20O.txt"):
+
+    if extract1 == False and "-2-".lower() in line.strip().lower():
+        extract1 = True
+        
+    if extract1 :
+        extracted_lines1.append(line)
+        if "Dictated".lower() in line.strip().lower():
+            extract1 = False # or break
+print("".join(extracted_lines1), file=open("results1.txt", "a"))
+
+
+filenames = ['results.txt', 'results1.txt']
+
+with open('finalresults.txt', 'w') as outfile:
+
+    for names in filenames:
+
+        with open(names) as infile:
+  
+            outfile.write(infile.read())
+  
+infile = "finalresults.txt"
+outfile = "cleaned.txt"
+
+delete_list = ["-2-", "OPERATION REPORT / PROTOCOLE OPERATOIRE", "MONTREAL CHILDREN’S HOSPITAL", "HOPITAL DE MONTREAL POUR ENFANTS","OPERATIVE PROCEDURE:"]
+fin = open(infile)
+fout = open(outfile, "w+")
+for line in fin:
+    for word in delete_list:
+       line = line.replace(word, "")
+    fout.write(line)
+fin.close()
+fout.close()
