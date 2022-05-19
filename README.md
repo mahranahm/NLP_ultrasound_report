@@ -24,4 +24,4 @@ To visualize the expirements used in this repository, we use the `wandb` package
 wandb login
 ```
 
-The first time you run a script with the `wandb` package dependency present, it will prompt you for your API key which you can find by following the instructions [here](https://docs.wandb.ai/quickstart). For the first time, it will also be necessary for the *project administrator* to add you to the dashboard. Email them at <cesare.spinoso-dipiano@mcgill.ca>. ***Skipping these steps may prevent you from running some of the experiments in the repository.***
+The first time you run a script with the `wandb` package dependency present, it will prompt you for your API key which you can find by following the instructions [here](https://docs.wandb.ai/quickstart). For the first time, it will also be necessary for the *project administrator* to add you to the dashboard. Email them at <cesare.spinoso-dipiano@mail.mcgill.ca>. ***Skipping these steps may prevent you from running some of the experiments in the repository.***
