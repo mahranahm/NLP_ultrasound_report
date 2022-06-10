@@ -134,3 +134,5 @@ dmypy.json
 
 # Throwaway/test files
 dumpster/
+.vscode
+wandb/

@@ -1,0 +1,28 @@
+schema: preproc_and_train
+dataset:
+  path: /home/c_spino/research/NLP_ultrasound_report/data/processed_data/ultrasound/dataset.jsonl
+preprocessing:
+  patterns_to_remove:
+    # Patterns are removed in this list's order 
+    - RENSEIGNEMENT CLINIQUE / CLINICAL INFORMATION[:]?
+    - PROTOCOLE RADIOLOGIQUE / RADIOLOGIST'S REPORT[:]?
+    - ULTRASOUND\s*(OF|OF THE)?\s*ABDOMEN AND PELVIS( WITH DOPPLER)?
+    - ULTRASOUND\s*(OF|OF THE)?\s*ABDOMEN( WITH DOPPLER)?
+    - ABDOMINAL AND PELVIC ULTRASOUND( WITH DOPPLER)?
+    - FINDINGS[:]?
+    - (IMPRESSION|[Ii]mpression)s?:?
+  lowercase: True
+  split_measure_text: True
+  tokenizer_type: nltk
+training:
+  vectorizer:
+    vectorizer_type: count
+    remove_stopwords: True
+    ngram_range: [1, 1]
+    binary: False
+  model:
+    model_type: svm
+    model_params:
+      C: 1.5
+      kernel: rbf
+      gamma: scale
